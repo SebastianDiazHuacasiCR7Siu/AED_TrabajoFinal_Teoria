@@ -41,10 +41,12 @@ public class MainApp extends Application {
             String nombre = txtUbic.getText().trim();
             if (!nombre.isEmpty()) {
                 grafo.agregarUbicacion(nombre);
-                output.appendText("✅ Ubicación agregada: " + nombre + "\n");
+                output.appendText("✅ La ubicación '" + nombre + "' fue creada correctamente.\n");
                 txtUbic.clear();
             }
         });
+
+        HBox filaUbicacion = new HBox(10, txtUbic, btnAgregarUbic);
 
         TextField txtOrigen = new TextField(); txtOrigen.setPromptText("Origen");
         TextField txtDestino = new TextField(); txtDestino.setPromptText("Destino");
@@ -63,7 +65,73 @@ public class MainApp extends Application {
             }
         });
 
-        VBox boxUbicaciones = new VBox(10, new HBox(10, txtUbic, btnAgregarUbic), new HBox(10, txtOrigen, txtDestino, txtDist, btnAgregarRuta));
+        HBox filaRuta = new HBox(10, txtOrigen, txtDestino, txtDist, btnAgregarRuta);
+
+        TextField txtDelRutaOrigen = new TextField(); txtDelRutaOrigen.setPromptText("Origen");
+        TextField txtDelRutaDestino = new TextField(); txtDelRutaDestino.setPromptText("Destino");
+        Button btnEliminarRuta = new Button("Eliminar Ruta");
+        btnEliminarRuta.setOnAction(e -> {
+            String o = txtDelRutaOrigen.getText().trim();
+            String d = txtDelRutaDestino.getText().trim();
+            grafo.eliminarRuta(o, d);
+            output.appendText("🗑️ Ruta eliminada: " + o + " → " + d + "\n");
+            txtDelRutaOrigen.clear(); txtDelRutaDestino.clear();
+        });
+
+        TextField txtDelUbic = new TextField(); txtDelUbic.setPromptText("Ubicación");
+        Button btnEliminarUbic = new Button("Eliminar Ubicación");
+        btnEliminarUbic.setOnAction(e -> {
+            String u = txtDelUbic.getText().trim();
+            grafo.eliminarUbicacion(u);
+            output.appendText("🗑️ Ubicación eliminada: " + u + "\n");
+            txtDelUbic.clear();
+        });
+
+        VBox boxEliminar = new VBox(10,
+            new Label("✂️ Eliminar Rutas y Ubicaciones"),
+            new HBox(10, txtDelRutaOrigen, txtDelRutaDestino, btnEliminarRuta),
+            new HBox(10, txtDelUbic, btnEliminarUbic)
+        );
+
+        TextField txtUbicActual = new TextField(); txtUbicActual.setPromptText("Nombre actual");
+        TextField txtUbicNuevo = new TextField(); txtUbicNuevo.setPromptText("Nuevo nombre");
+        Button btnModificarUbic = new Button("Modificar Ubicación");
+
+        btnModificarUbic.setOnAction(e -> {
+            String actual = txtUbicActual.getText().trim();
+            String nuevo = txtUbicNuevo.getText().trim();
+            if (!actual.isEmpty() && !nuevo.isEmpty()) {
+                grafo.modificarUbicacion(actual, nuevo);
+                output.appendText("✏️ Ubicación modificada: " + actual + " → " + nuevo + "\n");
+                txtUbicActual.clear(); txtUbicNuevo.clear();
+            }
+        });
+
+        TextField txtModRutaOrigen = new TextField(); txtModRutaOrigen.setPromptText("Origen");
+        TextField txtModRutaDestino = new TextField(); txtModRutaDestino.setPromptText("Destino");
+        TextField txtNuevoPeso = new TextField(); txtNuevoPeso.setPromptText("Nuevo peso");
+
+        Button btnModificarRuta = new Button("Modificar Ruta");
+        btnModificarRuta.setOnAction(e -> {
+            try {
+                String o = txtModRutaOrigen.getText().trim();
+                String d = txtModRutaDestino.getText().trim();
+                double nuevoPeso = Double.parseDouble(txtNuevoPeso.getText().trim());
+                grafo.modificarRuta(o, d, nuevoPeso);
+                output.appendText("✏️ Ruta modificada: " + o + " → " + d + " con peso " + nuevoPeso + "\n");
+                txtModRutaOrigen.clear(); txtModRutaDestino.clear(); txtNuevoPeso.clear();
+            } catch (Exception ex) {
+                output.appendText("⚠️ Error al modificar ruta\n");
+            }
+        });
+
+        VBox boxModificar = new VBox(10,
+            new Label("✏️ Modificar Ubicaciones y Rutas"),
+            new HBox(10, txtUbicActual, txtUbicNuevo, btnModificarUbic),
+            new HBox(10, txtModRutaOrigen, txtModRutaDestino, txtNuevoPeso, btnModificarRuta)
+        );
+
+        VBox boxUbicaciones = new VBox(10, filaUbicacion, filaRuta, boxEliminar, boxModificar);
         paneUbicaciones.setContent(boxUbicaciones);
 
         // 🍎 Sección: Productos
@@ -102,7 +170,62 @@ public class MainApp extends Application {
             }
         });
 
-        VBox boxProductos = new VBox(10, new HBox(10, txtUbicProd, txtClave, btnInsertar), new HBox(10, txtMostrar, btnMostrar));
+        TextField txtBuscarClave = new TextField(); txtBuscarClave.setPromptText("Clave a buscar");
+        Button btnBuscar = new Button("Buscar Producto");
+        btnBuscar.setOnAction(e -> {
+            try {
+                int clave = Integer.parseInt(txtBuscarClave.getText().trim());
+                boolean encontrado = false;
+
+                for (String nombre : grafo.getNombresUbicaciones()) {
+                    Ubicacion u = grafo.getUbicacion(nombre);
+                    if (u.productos.buscar(clave)) {
+                        output.appendText("🔍 Producto " + clave + " encontrado en: " + nombre + "\n");
+                        encontrado = true;
+                        break;
+                    }
+                }
+
+                if (!encontrado) {
+                    output.appendText("❌ Producto " + clave + " no se encuentra en ninguna ubicación\n");
+                }
+                txtBuscarClave.clear();
+            } catch (Exception ex) {
+                output.appendText("⚠️ Error al buscar producto\n");
+            }
+        });
+
+        TextField txtEliminarClave = new TextField(); txtEliminarClave.setPromptText("Clave a eliminar");
+        Button btnEliminarProd = new Button("Eliminar Producto");
+        btnEliminarProd.setOnAction(e -> {
+            try {
+                int clave = Integer.parseInt(txtEliminarClave.getText().trim());
+                boolean eliminado = false;
+
+                for (String nombre : grafo.getNombresUbicaciones()) {
+                    Ubicacion u = grafo.getUbicacion(nombre);
+                    if (u.productos.eliminar(clave)) {
+                        output.appendText("🗑️ Producto " + clave + " eliminado de: " + nombre + "\n");
+                        eliminado = true;
+                        break;
+                    }
+                }
+
+                if (!eliminado) {
+                    output.appendText("⚠️ Producto " + clave + " no se encontró para eliminar\n");
+                }
+                txtEliminarClave.clear();
+            } catch (Exception ex) {
+                output.appendText("⚠️ Error al eliminar producto\n");
+            }
+        });
+
+        VBox boxProductos = new VBox(10,
+            new HBox(10, txtUbicProd, txtClave, btnInsertar),
+            new HBox(10, txtMostrar, btnMostrar),
+            new HBox(10, txtBuscarClave, btnBuscar),
+            new HBox(10, txtEliminarClave, btnEliminarProd)
+        );
         paneProductos.setContent(boxProductos);
 
         // 📊 Sección: Análisis
@@ -155,8 +278,8 @@ public class MainApp extends Application {
 
         double anchoFijo = 180;
         List<Button> botonesAnalisis = List.of(
-                btnMapa, btnDijkstra, btnBFS, btnDFS,
-                btnCiclo, btnConectadas, btnAisladas
+            btnMapa, btnDijkstra, btnBFS, btnDFS,
+            btnCiclo, btnConectadas, btnAisladas
         );
         for (Button b : botonesAnalisis) b.setPrefWidth(anchoFijo);
 
