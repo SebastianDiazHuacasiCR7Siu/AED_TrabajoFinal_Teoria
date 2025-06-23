@@ -26,19 +26,51 @@ El sistema permite gestionar un almacen simulando ubicaciones conectadas mediant
 ## Requisitos del sistema
 
 * Java 17 o superior
-* JavaFX SDK 21.0.7
 * Sistema operativo: Windows (recomendado para compatibilidad con .bat)
 * Un editor de codigo (VSCode recomendado)
 
 ## Estructura del proyecto
 
-.
-├── bin/                 -> Archivos compilados (.class)
-├── lib/                 -> Librerias externas necesarias (JavaFX, GraphStream)
-├── src/                 -> Codigo fuente (.java)
-├── .vscode/             -> Configuracion del entorno para VSCode (opcional)
-├── compilar.bat         -> Script para compilar y ejecutar automaticamente
-└── README.md            -> Este archivo
+SISTEMAINVENTARIOAPP
+│
+├── .vscode                     # Configuración del entorno VSCode
+│   ├── launch.json
+│   └── settings.json
+│
+├── bin                        # Archivos compilados .class
+│   ├── BNode.class
+│   ├── BTree.class
+│   ├── Dijkstra.class
+│   ├── DijkstraNodoDistancia.class
+│   ├── Grafo.class
+│   ├── GrafoVisualizador.class
+│   ├── Main.class
+│   ├── MainApp.class
+│   ├── Ruta.class
+│   └── Ubicacion.class
+│
+├── javafx                     # SDK de JavaFX
+│   └── javafx-sdk-21.0.7
+│       ├── bin
+│       ├── legal
+│       ├── lib
+│       └── src.zip
+│
+├── lib                        # Librerías externas necesarias
+│   ├── gs-core-2.0.jar
+│   └── gs-ui-swing-2.0.jar
+│
+├── .gitignore
+│
+├── BTree.java
+├── compilar.bat              # Script para compilar y ejecutar
+├── Dijkstra.java
+├── Grafo.java
+├── GrafoVisualizador.java
+├── Main.java
+├── MainApp.java              # Interfaz principal JavaFX
+├── Ruta.java
+└── Ubicacion.java
 
 ## Instrucciones de instalacion y ejecucion
 
