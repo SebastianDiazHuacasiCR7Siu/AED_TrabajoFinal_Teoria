@@ -1,9 +1,9 @@
-Sistema de Gestion y Optimizacion de Inventarios en Almacenes
+# Sistema de Gestion y Optimizacion de Inventarios en Almacenes
 
 Proyecto academico desarrollado para el curso Algoritmos y Estructura de Datos en la Universidad Catolica de Santa Maria (Arequipa, Peru).
 El sistema permite gestionar un almacen simulando ubicaciones conectadas mediante rutas, usando estructuras de datos como grafos y arboles B+.
 
-Funcionalidades principales
+## Funcionalidades principales
 
 * Gestion de ubicaciones del almacen (agregar, eliminar, modificar).
 * Gestion de rutas entre ubicaciones con pesos (distancias).
@@ -14,7 +14,7 @@ Funcionalidades principales
 * Visualizacion interactiva del mapa del almacen.
 * Interfaz grafica intuitiva desarrollada con JavaFX.
 
-Creditos por area
+## Creditos por area
 
 | Integrante              | Rol         | Aporte principal                                                              |
 | ----------------------- | ----------- | ----------------------------------------------------------------------------- |
@@ -23,14 +23,14 @@ Creditos por area
 | Giancarlo Huerta Fabian | Programador | Interfaz grafica (JavaFX), ajustes visuales, estructura portable del proyecto |
 | Xiomara Ortiz Puma      | Programador | Arbol B+ para productos, documentacion tecnica                                |
 
-Requisitos del sistema
+## Requisitos del sistema
 
 * Java 17 o superior
 * JavaFX SDK 21.0.7
 * Sistema operativo: Windows (recomendado para compatibilidad con .bat)
 * Un editor de codigo (VSCode recomendado)
 
-Estructura del proyecto
+## Estructura del proyecto
 
 .
 ├── bin/                 -> Archivos compilados (.class)
@@ -40,7 +40,7 @@ Estructura del proyecto
 ├── compilar.bat         -> Script para compilar y ejecutar automaticamente
 └── README.md            -> Este archivo
 
-Instrucciones de instalacion y ejecucion
+## Instrucciones de instalacion y ejecucion
 
 1. Descargar y configurar JavaFX
 
