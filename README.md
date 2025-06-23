@@ -29,70 +29,19 @@ El sistema permite gestionar un almacen simulando ubicaciones conectadas mediant
 * Sistema operativo: Windows (recomendado para compatibilidad con .bat)
 * Un editor de codigo (VSCode recomendado)
 
-## Estructura del proyecto
+## Instrucciones de instalación y uso
 
-SISTEMAINVENTARIOAPP
-│
-├── .vscode                     # Configuración del entorno VSCode
-│   ├── launch.json
-│   └── settings.json
-│
-├── bin                        # Archivos compilados .class
-│   ├── BNode.class
-│   ├── BTree.class
-│   ├── Dijkstra.class
-│   ├── DijkstraNodoDistancia.class
-│   ├── Grafo.class
-│   ├── GrafoVisualizador.class
-│   ├── Main.class
-│   ├── MainApp.class
-│   ├── Ruta.class
-│   └── Ubicacion.class
-│
-├── javafx                     # SDK de JavaFX
-│   └── javafx-sdk-21.0.7
-│       ├── bin
-│       ├── legal
-│       ├── lib
-│       └── src.zip
-│
-├── lib                        # Librerías externas necesarias
-│   ├── gs-core-2.0.jar
-│   └── gs-ui-swing-2.0.jar
-│
-├── .gitignore
-│
-├── BTree.java
-├── compilar.bat              # Script para compilar y ejecutar
-├── Dijkstra.java
-├── Grafo.java
-├── GrafoVisualizador.java
-├── Main.java
-├── MainApp.java              # Interfaz principal JavaFX
-├── Ruta.java
-└── Ubicacion.java
+Este proyecto es totalmente portable. Ya incluye el SDK de JavaFX, las librerías necesarias y los archivos de configuración.
 
-## Instrucciones de instalacion y ejecucion
+Abrir una terminal en la raíz del proyecto.
 
-1. Descargar y configurar JavaFX
+Ejecutar el archivo compilar.bat:
 
-* Descargar JavaFX SDK 21.0.7 desde: [https://gluonhq.com/products/javafx/](https://gluonhq.com/products/javafx/)
-* Extraerlo y colocar la carpeta javafx-sdk-21.0.7 dentro de lib/ (o ajustar la ruta en el .bat)
+./compilar.bat
 
-2. Ejecutar el sistema
+Esto compilará y lanzará automáticamente la interfaz gráfica del sistema de inventario.
 
-* Abrir una terminal en la raiz del proyecto
-* Ejecutar el siguiente comando:
-
-  .\compilar.bat
-
-Este script:
-
-* Limpia y recompila el proyecto
-* Usa el modulo JavaFX y las librerias de lib/
-* Ejecuta automaticamente el programa
-
-Importante: No mover las carpetas bin, lib ni el archivo compilar.bat a otras ubicaciones sin actualizar las rutas internas del script.
+Importante: No cambies de ubicación las carpetas bin, lib, javafx ni el archivo compilar.bat sin actualizar las rutas internas del script.
 
 ## Observaciones
 
