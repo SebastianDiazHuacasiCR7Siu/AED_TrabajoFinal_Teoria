@@ -1,0 +1,5 @@
+# Ignorar clases compiladas
+*.class
+
+# Ignorar carpeta bin si usas salida dirigida
+/bin/

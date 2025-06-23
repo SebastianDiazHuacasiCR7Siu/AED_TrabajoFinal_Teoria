@@ -20,7 +20,7 @@ public class Main {
         grafo.agregarRuta("Pasillo 1", "Zona Carga", 4);
 
         System.out.println("\n🗺️  Mapa del Almacén:");
-        grafo.mostrarGrafoComoTexto();
+        grafo.mostrarGrafo();
 
         // ✅ Distancias mínimas con Dijkstra
         System.out.println("\n📍 Distancias mínimas desde 'Entrada':");
@@ -68,7 +68,7 @@ public class Main {
         grafo.eliminarUbicacion("Zona Carga");
 
         System.out.println("\n📉 Grafo tras eliminar una ruta y una ubicación:");
-        grafo.mostrarGrafoComoTexto();
+        grafo.mostrarGrafo();
     }
 }
 

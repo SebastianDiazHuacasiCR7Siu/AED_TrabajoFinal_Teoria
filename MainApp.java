@@ -1,17 +1,14 @@
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.util.*;
 
 public class MainApp extends Application {
-
     private Grafo grafo = new Grafo();
 
     public static void main(String[] args) {
@@ -19,148 +16,164 @@ public class MainApp extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("Sistema de Inventario de Almacén");
+    public void start(Stage stage) {
+        stage.setTitle("Sistema de Inventario de Almacén");
 
-        VBox layout = new VBox(10);
-        layout.setStyle("-fx-padding: 15;");
+        VBox root = new VBox(15);
+        root.setPadding(new Insets(20));
 
-        Label titulo = new Label("Gestión de Inventario con Grafo y Árbol B");
-        titulo.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
+        Label titulo = new Label("📦 Gestión de Inventario con Grafo y Árbol B");
+        titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        titulo.setAlignment(Pos.CENTER);
+        titulo.setMaxWidth(Double.MAX_VALUE);
 
         TextArea output = new TextArea();
+        output.setPrefRowCount(15);
         output.setEditable(false);
-        output.setPrefHeight(350);
 
-        TextField txtUbicacion = new TextField();
-        txtUbicacion.setPromptText("Nombre de la nueva ubicación");
-        Button btnAgregarUbicacion = new Button("Agregar Ubicación");
-        btnAgregarUbicacion.setOnAction(e -> {
-            String nombre = txtUbicacion.getText().trim();
+        // 📍 Sección: Ubicaciones y Rutas
+        TitledPane paneUbicaciones = new TitledPane();
+        paneUbicaciones.setText("📍 Ubicaciones y Rutas");
+
+        TextField txtUbic = new TextField(); txtUbic.setPromptText("Nombre de ubicación");
+        Button btnAgregarUbic = new Button("Agregar Ubicación");
+        btnAgregarUbic.setOnAction(e -> {
+            String nombre = txtUbic.getText().trim();
             if (!nombre.isEmpty()) {
                 grafo.agregarUbicacion(nombre);
                 output.appendText("✅ Ubicación agregada: " + nombre + "\n");
-                txtUbicacion.clear();
+                txtUbic.clear();
             }
         });
-        HBox filaAgregarUbicacion = new HBox(10, txtUbicacion, btnAgregarUbicacion);
 
         TextField txtOrigen = new TextField(); txtOrigen.setPromptText("Origen");
         TextField txtDestino = new TextField(); txtDestino.setPromptText("Destino");
-        TextField txtPeso = new TextField(); txtPeso.setPromptText("Distancia");
+        TextField txtDist = new TextField(); txtDist.setPromptText("Distancia");
         Button btnAgregarRuta = new Button("Agregar Ruta");
         btnAgregarRuta.setOnAction(e -> {
             try {
                 String origen = txtOrigen.getText().trim();
                 String destino = txtDestino.getText().trim();
-                double peso = Double.parseDouble(txtPeso.getText().trim());
+                double peso = Double.parseDouble(txtDist.getText().trim());
                 grafo.agregarRuta(origen, destino, peso);
-                output.appendText("🔗 Ruta agregada: " + origen + " -> " + destino + " (" + peso + ")\n");
-                txtOrigen.clear(); txtDestino.clear(); txtPeso.clear();
+                output.appendText("🖎 Ruta: " + origen + " → " + destino + " (" + peso + ")\n");
+                txtOrigen.clear(); txtDestino.clear(); txtDist.clear();
             } catch (Exception ex) {
-                output.appendText("⚠️ Error al agregar ruta. Verifica los datos.\n");
+                output.appendText("⚠️ Error al agregar ruta\n");
             }
         });
-        HBox filaAgregarRuta = new HBox(10, txtOrigen, txtDestino, txtPeso, btnAgregarRuta);
 
-        TextField txtUbicProducto = new TextField(); txtUbicProducto.setPromptText("Ubicación");
-        TextField txtClaveProducto = new TextField(); txtClaveProducto.setPromptText("Clave Producto");
-        Button btnInsertarProducto = new Button("Insertar Producto");
-        btnInsertarProducto.setOnAction(e -> {
-            String ubic = txtUbicProducto.getText().trim();
+        VBox boxUbicaciones = new VBox(10, new HBox(10, txtUbic, btnAgregarUbic), new HBox(10, txtOrigen, txtDestino, txtDist, btnAgregarRuta));
+        paneUbicaciones.setContent(boxUbicaciones);
+
+        // 🍎 Sección: Productos
+        TitledPane paneProductos = new TitledPane();
+        paneProductos.setText("🍚 Productos");
+
+        TextField txtUbicProd = new TextField(); txtUbicProd.setPromptText("Ubicación");
+        TextField txtClave = new TextField(); txtClave.setPromptText("Clave Producto");
+        Button btnInsertar = new Button("Insertar Producto");
+        btnInsertar.setOnAction(e -> {
             try {
-                int clave = Integer.parseInt(txtClaveProducto.getText().trim());
+                String ubic = txtUbicProd.getText().trim();
+                int clave = Integer.parseInt(txtClave.getText().trim());
                 Ubicacion u = grafo.getUbicacion(ubic);
                 if (u != null) {
                     u.productos.insertar(clave);
                     output.appendText("📦 Producto " + clave + " insertado en " + ubic + "\n");
                 } else {
-                    output.appendText("⚠️ Ubicación no encontrada: " + ubic + "\n");
+                    output.appendText("⚠️ Ubicación no encontrada\n");
                 }
-                txtUbicProducto.clear(); txtClaveProducto.clear();
+                txtUbicProd.clear(); txtClave.clear();
             } catch (Exception ex) {
-                output.appendText("⚠️ Error al insertar producto.\n");
+                output.appendText("⚠️ Error al insertar producto\n");
             }
         });
-        HBox filaInsertarProducto = new HBox(10, txtUbicProducto, txtClaveProducto, btnInsertarProducto);
 
-        TextField txtMostrarArbol = new TextField();
-        txtMostrarArbol.setPromptText("Ubicación a mostrar productos");
-        Button btnMostrarArbol = new Button("Ver productos en ubicación");
-        btnMostrarArbol.setOnAction(e -> {
-            String nombre = txtMostrarArbol.getText().trim();
+        TextField txtMostrar = new TextField(); txtMostrar.setPromptText("Ubicación a consultar");
+        Button btnMostrar = new Button("Ver productos");
+        btnMostrar.setOnAction(e -> {
+            String nombre = txtMostrar.getText().trim();
             Ubicacion u = grafo.getUbicacion(nombre);
             if (u != null) {
-                output.appendText("\n🌳 Productos en " + nombre + ":\n");
-                u.productos.mostrar();
+                output.appendText("🌳 Productos en " + nombre + ":\n" + u.productos.mostrarComoTexto());
             } else {
-                output.appendText("⚠️ Ubicación no encontrada: " + nombre + "\n");
+                output.appendText("⚠️ Ubicación no encontrada\n");
             }
         });
-        HBox filaMostrarArbol = new HBox(10, txtMostrarArbol, btnMostrarArbol);
 
-        Button btnMostrarGrafo = new Button("Ver mapa del almacén");
-        btnMostrarGrafo.setOnAction(e -> {
-            output.appendText("\n🗺️ Mapa del Almacén:\n");
-            output.appendText(grafo.mostrarGrafoComoTexto());
+        VBox boxProductos = new VBox(10, new HBox(10, txtUbicProd, txtClave, btnInsertar), new HBox(10, txtMostrar, btnMostrar));
+        paneProductos.setContent(boxProductos);
+
+        // 📊 Sección: Análisis
+        TitledPane paneAnalisis = new TitledPane();
+        paneAnalisis.setText("📊 Análisis del Almacén");
+
+        Button btnMapa = new Button("🌐 Ver mapa del almacén");
+        Button btnDijkstra = new Button("🔹 Rutas más cortas");
+        Button btnBFS = new Button("🔍 Explorar BFS");
+        Button btnDFS = new Button("🔎 Explorar DFS");
+        Button btnCiclo = new Button("❓ ¿Hay ciclo?");
+        Button btnConectadas = new Button("🔗 Zonas conectadas");
+        Button btnAisladas = new Button("🚫 Ubicaciones aisladas");
+
+        btnMapa.setOnAction(e -> {
+            output.appendText("\n📌 Mapa del Almacén:\n");
+            output.appendText(grafo.mostrarGrafo());
+            GrafoVisualizador.mostrar(grafo);
         });
 
-        Button btnVisualizarGrafo = new Button("🖼 Ver grafo visual");
-        btnVisualizarGrafo.setOnAction(e -> {
-            Stage stage = new Stage();
-            stage.setTitle("Vista del Grafo del Almacén");
-
-            GrafoCanvas canvas = new GrafoCanvas(grafo);
-            Scene scene = new Scene(new StackPane(canvas), 850, 650);
-
-            stage.setScene(scene);
-            stage.show();
-        });
-
-        Button btnDijkstra = new Button("Calcular rutas más cortas");
         btnDijkstra.setOnAction(e -> {
-            output.appendText("\n📍 Rutas más cortas desde 'Entrada':\n");
+            output.appendText("\n🔹 Rutas más cortas desde 'Entrada':\n");
             Map<String, Double> dist = Dijkstra.calcularDistancias(grafo, "Entrada");
             for (String d : dist.keySet()) output.appendText("A " + d + ": " + dist.get(d) + "\n");
         });
 
-        Button btnBFS = new Button("Explorar almacén (rápido)");
-        btnBFS.setOnAction(e -> {
-            output.appendText("\n🔎 Exploración rápida desde 'Entrada':\n");
-            grafo.bfs("Entrada");
+        btnBFS.setOnAction(e -> output.appendText(grafo.bfs("Entrada")));
+        btnDFS.setOnAction(e -> output.appendText(grafo.dfs("Entrada")));
+        btnCiclo.setOnAction(e -> {
+            boolean ciclo = grafo.hayCiclo();
+            String mensaje = ciclo ? "⚠️ Sí, existen ciclos en el grafo.\n" : "✅ No hay ciclos, el grafo es eficiente.\n";
+            output.appendText(mensaje);
         });
 
-        Button btnDFS = new Button("Explorar almacén (profundo)");
-        btnDFS.setOnAction(e -> {
-            output.appendText("\n🔎 Exploración profunda desde 'Entrada':\n");
-            grafo.dfs("Entrada");
-        });
-
-        Button btnCiclos = new Button("Verificar rutas ineficientes");
-        btnCiclos.setOnAction(e -> output.appendText("\n🔁 ¿Existen rutas ineficientes?: " + grafo.hayCiclo() + "\n"));
-
-        Button btnComponentes = new Button("Zonas conectadas del almacén");
-        btnComponentes.setOnAction(e -> {
+        btnConectadas.setOnAction(e -> {
             output.appendText("\n🔗 Zonas conectadas:\n");
-            for (Set<String> comp : grafo.componentesConexas())
-                output.appendText("Zona: " + comp + "\n");
+            for (Set<String> c : grafo.componentesConexas()) output.appendText("Zona: " + c + "\n");
         });
 
-        Button btnAisladas = new Button("Ubicaciones sin conexión");
         btnAisladas.setOnAction(e -> {
             output.appendText("\n🚫 Ubicaciones aisladas:\n");
-            for (String z : grafo.zonasAisladas())
-                output.appendText("Ubicación: " + z + "\n");
+            for (String z : grafo.zonasAisladas()) output.appendText("Ubicación: " + z + "\n");
         });
 
-        VBox filaAnalisis = new VBox(5, btnMostrarGrafo, btnVisualizarGrafo, btnDijkstra, btnBFS, btnDFS, btnCiclos, btnComponentes, btnAisladas);
+        GridPane gridBotones = new GridPane();
+        gridBotones.setHgap(15);
+        gridBotones.setVgap(15);
+        gridBotones.setPadding(new Insets(10));
+        gridBotones.setAlignment(Pos.TOP_LEFT);
 
-        layout.getChildren().addAll(titulo, filaAgregarUbicacion, filaAgregarRuta, filaInsertarProducto, filaMostrarArbol, filaAnalisis, output);
+        double anchoFijo = 180;
+        List<Button> botonesAnalisis = List.of(
+                btnMapa, btnDijkstra, btnBFS, btnDFS,
+                btnCiclo, btnConectadas, btnAisladas
+        );
+        for (Button b : botonesAnalisis) b.setPrefWidth(anchoFijo);
 
-        Scene scene = new Scene(layout, 950, 700);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        gridBotones.add(btnMapa, 0, 0);
+        gridBotones.add(btnDijkstra, 1, 0);
+        gridBotones.add(btnBFS, 2, 0);
+        gridBotones.add(btnDFS, 3, 0);
+        gridBotones.add(btnCiclo, 0, 1);
+        gridBotones.add(btnConectadas, 1, 1);
+        gridBotones.add(btnAisladas, 2, 1);
+
+        paneAnalisis.setContent(gridBotones);
+
+        root.getChildren().addAll(titulo, paneUbicaciones, paneProductos, paneAnalisis, output);
+
+        Scene scene = new Scene(root, 1000, 700);
+        stage.setScene(scene);
+        stage.show();
     }
 }
-
-
