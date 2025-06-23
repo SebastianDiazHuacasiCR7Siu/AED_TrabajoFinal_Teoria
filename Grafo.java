@@ -195,4 +195,35 @@ public class Grafo {
             u.rutas.removeIf(ruta -> ruta.destino.nombre.equals(nombre));
         }
     }
+
+    public void modificarRuta(String origen, String destino, double nuevoPeso) {
+        Ubicacion uOrigen = ubicaciones.get(origen);
+        if (uOrigen != null) {
+            for (Ruta r : uOrigen.rutas) {
+                if (r.destino.nombre.equals(destino)) {
+                    r.peso = nuevoPeso;
+                    break;
+                }
+            }
+        }
+    }
+
+
+    public void modificarUbicacion(String actual, String nuevo) {
+        if (!ubicaciones.containsKey(actual) || ubicaciones.containsKey(nuevo)) return;
+
+        Ubicacion u = ubicaciones.remove(actual);
+        u.nombre = nuevo;
+        ubicaciones.put(nuevo, u);
+
+        // Actualizar referencias en rutas
+        for (Ubicacion origen : ubicaciones.values()) {
+            for (Ruta r : origen.rutas) {
+                if (r.destino == u) {
+                    r.destino = u;
+                }
+            }
+        }
+    }
+
 }
