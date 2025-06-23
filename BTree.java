@@ -124,4 +124,57 @@ public class BTree {
         }
         return sb.toString();
     }
+
+     public boolean buscar(int clave) {
+        return buscarRec(raiz, clave);
+    }
+
+    private boolean buscarRec(BNode nodo, int clave) {
+        int i = 0;
+        while (i < nodo.n && clave > nodo.claves[i]) {
+            i++;
+        }
+
+        if (i < nodo.n && clave == nodo.claves[i]) {
+            return true;
+        }
+
+        if (nodo.hoja) {
+            return false;
+        } else {
+            return buscarRec(nodo.hijos[i], clave);
+        }
+    }
+
+    public boolean eliminar(int clave) {
+        return eliminarRec(raiz, clave);
+    }
+
+    private boolean eliminarRec(BNode nodo, int clave) {
+        int i = 0;
+        while (i < nodo.n && clave > nodo.claves[i]) {
+            i++;
+        }
+
+        if (i < nodo.n && clave == nodo.claves[i]) {
+            if (nodo.hoja) {
+                for (int j = i; j < nodo.n - 1; j++) {
+                    nodo.claves[j] = nodo.claves[j + 1];
+                }
+                nodo.n--;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        if (nodo.hoja) {
+            return false;
+        } else {
+            return eliminarRec(nodo.hijos[i], clave);
+        }
+    }
+
+    
 }
+
